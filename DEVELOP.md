@@ -33,7 +33,11 @@ docker-compose up -d
 ### 2. 安装依赖
 
 ```bash
-npm install --registry https://registry.npm.taobao.org
+# 清空缓存(可选)
+#npm cache clean --force
+
+# 带上 --legacy-peer-deps 参数，解决 peerDependencies 问题
+npm install --registry=https://registry.npmmirror.com --legacy-peer-deps
 ```
 
 ### 3. 初始化数据库
