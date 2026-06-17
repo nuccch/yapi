@@ -10,7 +10,7 @@ var assetsPluginInstance = new AssetsPlugin({
 });
 var fs = require('fs');
 var package = require('./package.json');
-var yapi = require('./server/yapi');
+var config = require('./config.json');
 var isWin = require('os').platform() === 'win32'
 
 var compressPlugin = new CompressionPlugin({
@@ -127,7 +127,7 @@ module.exports = {
           new this.webpack.DefinePlugin({
             'process.env.NODE_ENV': JSON.stringify(ENV_PARAMS),
             'process.env.version': JSON.stringify(package.version),
-            'process.env.versionNotify': yapi.WEBCONFIG.versionNotify
+            'process.env.versionNotify': config.versionNotify
           })
         );
 

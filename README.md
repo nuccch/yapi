@@ -55,6 +55,48 @@ YApi 是<strong>高效</strong>、<strong>易用</strong>、<strong>功能强大
     yapi ls //查看版本号列表
     yapi update //更新到最新版本
     yapi update -v {Version} //更新到指定版本
+
+#### Docker Compose 构建部署
+本项目提供了 `Dockerfile` 与 `docker-compose-build.yml`，可基于源码本地构建镜像并一键启动 YApi 与 MongoDB 服务。镜像构建时会自动执行 `npm run build-client`，并通过 `entrypoint.sh` 在首次启动时自动初始化数据库（初始化完成后会在 `data` 目录生成 `init.lock`，后续启动自动跳过）。
+
+环境要求：已安装 Docker 与 Docker Compose。
+
+1. 构建镜像并启动服务：
+
+    ```bash
+    docker compose -f docker-compose-build.yml up -d --build
+    ```
+
+2. 查看服务状态与日志：
+
+    ```bash
+    docker compose -f docker-compose-build.yml ps
+    docker compose -f docker-compose-build.yml logs -f yapi
+    ```
+
+3. 访问平台：浏览器打开 [http://localhost:3000](http://localhost:3000)，使用管理员账号登录（默认密码 `ymfe.org`）。
+
+4. 停止与启动服务：
+
+    ```bash
+    docker compose -f docker-compose-build.yml stop
+    docker compose -f docker-compose-build.yml start
+    ```
+
+5. 停止并删除容器（保留数据卷，数据不丢失）：
+
+    ```bash
+    docker compose -f docker-compose-build.yml down
+    ```
+
+服务与数据说明：
+* `yapi` 容器对外暴露端口 `3000`，日志目录挂载到命名卷 `yapi_log`（`/home/yapi/log`），数据目录挂载到命名卷 `yapi_data`（`/home/yapi/data`）。
+* `mongo` 容器对外暴露端口 `27017`，数据持久化到命名卷 `mongo_data`。
+* 如需彻底清除数据，请追加 `-v` 参数删除数据卷：
+
+    ```bash
+    docker compose -f docker-compose-build.yml down -v
+    ```
     
 ### 教程
 * [使用 YApi 管理 API 文档，测试， mock](https://juejin.im/post/5acc879f6fb9a028c42e8822)

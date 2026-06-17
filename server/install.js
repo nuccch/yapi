@@ -9,7 +9,7 @@ yapi.commons = commons;
 yapi.connect = dbModule.connect();
 
 function install() {
-  let exist = yapi.commons.fileExist(yapi.path.join(yapi.WEBROOT_RUNTIME, 'init.lock'));
+  let exist = yapi.commons.fileExist(yapi.path.join(yapi.WEBROOT_RUNTIME, 'data', 'init.lock'));
 
   if (exist) {
     throw new Error(
@@ -35,6 +35,16 @@ function setupSql() {
 
   yapi.connect
     .then(function() {
+      let userCol = mongoose.connection.db.collection('user');
+      return userCol.findOne({ email: yapi.WEBCONFIG.adminAccount });
+    })
+    .then(function(existUser) {
+      if (existUser) {
+        console.log(`管理员账号 "${yapi.WEBCONFIG.adminAccount}" 已存在，跳过初始化`);
+        fs.ensureDirSync(yapi.path.join(yapi.WEBROOT_RUNTIME, 'data'));
+        fs.writeFileSync(yapi.path.join(yapi.WEBROOT_RUNTIME, 'data', 'init.lock'), '');
+        process.exit(0);
+      }
       let userCol = mongoose.connection.db.collection('user');
       userCol.createIndex({
         username: 1

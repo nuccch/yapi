@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:4.4
+    container_name: yapi-mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - yapi-network
+
+  yapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: yapi
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - mongo
+    volumes:
+      - yapi_log:/home/yapi/log
+      - yapi_data:/home/yapi/data
+    networks:
+      - yapi-network
+
+volumes:
+  mongo_data:
+    driver: local
+  yapi_log:
+    driver: local
+  yapi_data:
+    driver: local
+
+networks:
+  yapi-network:
+    driver: bridge
