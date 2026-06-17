@@ -274,13 +274,13 @@ yapi/
 ## 安装依赖
 
 ```bash
-npm install --registry https://registry.npm.taobao.org
+npm install --registry https://registry.npmmirror.com --legacy-peer-deps
 ```
 
 如果遇到 node-sass 安装问题（由于使用了淘宝镜像源），确保 `.npmrc` 文件中包含：
 
 ```
-sass_binary_site=https://npm.taobao.org/mirrors/node-sass/
+sass_binary_site=https://registry.npmmirror.com/mirrors/node-sass/
 ```
 
 ## 初始化数据库
@@ -405,7 +405,7 @@ YApi 支持插件扩展，详情请参考 [插件开发文档](docs/documents/pl
 
 确保使用淘宝镜像：
 ```bash
-npm install --registry https://registry.npm.taobao.org
+npm install --registry https://registry.npmmirror.com --legacy-peer-deps
 ```
 
 ### 2. MongoDB 连接失败
